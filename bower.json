@@ -1,0 +1,7 @@
+{
+  "name": "gherkin-editor",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.16"
+  }
+}

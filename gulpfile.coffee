@@ -14,9 +14,8 @@ dest =
 gulp.task 'coffee', ->
   gulp
     .src(source.coffee)
-    .pipe(coffee({bare: true}).on('error', handleError))
-    .pipe(gulp.dest(dest.js))
-    .on('error', notify.onError('<%= error.message %>'))
+    .pipe(coffee({bare: true}).on('error', handleError).on('error', notify.onError('<%= error.message %>')))
+    .pipe gulp.dest(dest.js)
 
 gulp.task '_watch', ->
   gulp.watch source.coffee, ['coffee']

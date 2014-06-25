@@ -1,10 +1,22 @@
 <!doctype html>
-<html lang="en" ng-app="gherkin_editor">
+<html lang="en" ng-app="gherkinEditor">
 <head>
   <meta charset="utf-8">
   <title>gherkin-editor</title>
+  <!-- vendors -->
+  <script type="text/javascript" src="build/vendor/angular/angular.js"></script>
+  <!-- own stuff -->
+  <script type="text/javascript" src="build/js/controller/index.js"></script>
+  <script type="text/javascript" src="build/js/directive/index.js"></script>
+  <script type="text/javascript" src="build/js/service/index.js"></script>
+  <script type="text/javascript" src="build/js/index.js"></script>
 </head>
 <body>
-
+  <section ng-controller="FileCtrl">
+    <input  file-change="selected" type="file" accept=".feature" />
+  </section>
+  <section ng-controller="EditorCtrl">
+    <pre>{{content.complete}}</pre>
+  </section>
 </body>
 </html>

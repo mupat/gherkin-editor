@@ -2,6 +2,7 @@ gherkinEditor = angular.module 'gherkinEditor', [
   'gherkinEditor.controllers'
   'gherkinEditor.directives'
   'gherkinEditor.services'
+  'ngSanitize'
 ]
 gherkinEditor.factory '$exceptionHandler', ->
   return (exception, cause) ->

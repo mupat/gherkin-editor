@@ -3,11 +3,10 @@ fs = require 'fs'
 class Editor
   constructor: ($rootScope, $scope) ->
     $scope.content = {}
-    $rootScope.$on 'file.selected', (scope, file) ->
-      fs.readFile file, (err, data) ->
-        return console.log err if err
-
-        $scope.$apply ->
-          $scope.content.complete = data.toString()
+    $scope.content.lines = []
+    $rootScope.$on 'gherkin.snippet', (scope, entry) ->
+      console.log 'get snippet', entry
+      $scope.$apply ->
+        $scope.content.lines.push entry
 
 module.exports = Editor

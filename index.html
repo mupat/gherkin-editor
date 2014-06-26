@@ -5,6 +5,7 @@
   <title>gherkin-editor</title>
   <!-- vendors -->
   <script type="text/javascript" src="build/vendor/angular/angular.js"></script>
+  <script type="text/javascript" src="build/vendor/angular-sanitize/angular-sanitize.js"></script>
   <!-- own stuff -->
   <script type="text/javascript" src="build/js/controller/index.js"></script>
   <script type="text/javascript" src="build/js/directive/index.js"></script>
@@ -16,7 +17,7 @@
     <input  file-change="selected" type="file" accept=".feature" />
   </section>
   <section ng-controller="EditorCtrl">
-    <pre>{{content.complete}}</pre>
+    <div ng-repeat="line in content.lines" ng-bind-html="line">{{line}}</div>
   </section>
 </body>
 </html>

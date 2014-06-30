@@ -44,6 +44,7 @@ class Gherkin
           table = [row]
           @_concat 'table', 'table', table, '', line
       eof: =>
+        @_prepare()
         @$rootScope.$broadcast 'gherkin.done', @content
     }
 
@@ -54,8 +55,65 @@ class Gherkin
       description: description
       line: line
       value: value
-      indentation: @fileContent[line - 1].search(/\S/) # get original file indentation
 
     @content.push part
+
+  _prepare: ->
+    for part, i in @content
+      if i is 0 # set default level for first entry
+        part.level = 0
+        part.blockEnd = false
+        continue
+
+      before = @content[i - 1]
+      after = if i is @content.length - 1 then @content[i] else @content[i + 1]
+
+      blockElements = ['scenario', 'scenario_outline', 'background', 'tag']
+      part.blockEnd = (part.type not in blockElements and after.type in blockElements)
+      part.level = @_calcLevel before, part if i > 0
+
+  _calcLevel: (before, actual) ->
+    #first check for fixed levels
+    if actual.type is 'feature'
+      return 0
+
+    if actual.type in ['background', 'scenario', 'scenario_outline']
+      return 1
+
+    if actual.type in ['step', 'examples']
+      return 2
+
+    if actual.type is 'tag'
+      if before.level > 0 #check
+        return 1
+      else
+        return 0
+
+    if actual.type is 'doc_string'
+      return before.level + 1
+
+    # if actual.type is 'comment'
+      # if before.blockEnd
+      #   return before.level - 1
+      # actualFileIndent = @fileContent[actual.line - 1].search(/\S/) # get original file level
+      # lastFileIndent = @fileContent[actual.line - 2].search(/\S/) # get original file level
+      # if lastFileIndent > actualFileIndent
+      #   return last.level - 1
+
+    # level = before.level # set last level
+
+    # if in contains to a block
+    if before.type in ['feature', 'background', 'scenario', 'scenario_outline']
+      return before.level + 1
+    # else if actual.type in ['feature', 'background', 'scenario', 'scenario_outline'] 
+    #   indentation--
+    
+    # use the file indentation to see the end of a block
+    # console.log 'check file', actualFileIndent, lastFileIndent
+    # if actualFileIndent < lastFileIndent
+    #     indentation--
+
+    # console.log 'return indent', indentation
+    return before.level
 
 module.exports = Gherkin

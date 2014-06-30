@@ -17,7 +17,7 @@ Feature: Feature Text
 
   @tag3 @tag4
   Scenario: Reading a Scenario
-    Given there is a step
+    Given there is a step with id "df"
     But not another step
 
   @tag3
@@ -44,3 +44,13 @@ Feature: Feature Text
       And something else
       """
     Then crazy
+
+  Scenario Outline: eating
+    Given there are <start> cucumbers
+    When I eat <eat> cucumbers
+    Then I should have <left> cucumbers
+
+    Examples:
+      | start | eat | left |
+      |  12   |  5  |  7   |
+      |  20   |  5  |  15  |

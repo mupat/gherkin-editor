@@ -5,8 +5,11 @@ class Editor
     $scope.content = {}
     $scope.content.lines = []
     $rootScope.$on 'gherkin.snippet', (scope, entry) ->
-      console.log 'get snippet', entry
       $scope.$apply ->
         $scope.content.lines.push entry
+
+    $rootScope.$on 'gherkin.done', (scope, content) ->
+      $scope.$apply ->
+        $scope.content.lines = content
 
 module.exports = Editor

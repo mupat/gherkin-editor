@@ -1,6 +1,7 @@
 #Comment on line 1
 #Comment on line 2
-@tag1 @tag2
+@tag1:bla
+@tag2
 Feature: Feature Text
   In order to test multiline forms
   As a ragel writer
@@ -38,7 +39,7 @@ Feature: Feature Text
 
   Scenario: Hammerzeit
     Given All work and no play
-      """
+      """text
       Makes Homer something something
       And something else
       """

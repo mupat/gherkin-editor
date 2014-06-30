@@ -5,40 +5,57 @@ class Gherkin
   constructor: (@$rootScope) ->
     Lexer = gherkin.Lexer('en')
     @lexer = new Lexer @_gherkinFuncs()
-
     @$rootScope.$on 'file.selected', @_load.bind(@)
 
   _load: (scope, file) ->
+    @content = []
+    @fileContent = []
     fs.readFile file, (err, data) =>
       return @$rootScope.$emit 'error', err if err 
-      @lexer.scan data
+      try
+        @fileContent = data.toString().split('\n')
+        @lexer.scan data
+      catch e
+        @$rootScope.$emit 'error', e
+        @$rootScope.$broadcast 'gherkin.error', e.message
 
   _gherkinFuncs: ->
     # gherkin library functions
     return {
+      feature: @_concat.bind(@, 'feature')
+      background: @_concat.bind(@, 'background')
+      scenario: @_concat.bind(@, 'scenario')
+      scenario_outline: @_concat.bind(@, 'scenario_outline')
+      examples: @_concat.bind(@, 'examples')
       comment: (value, line) =>
-        # console.log({token:'comment',value:value,line:line})
+        @_concat 'comment', 'comment', value, '', line
       tag: (value, line) =>
-        # console.log({token:'tag',value:value,line:line})
-      feature: (keyword, name, description, line) =>
-        console.log({token:'feature',keyword:keyword,name:name,description:description,line:line})
-        @$rootScope.$broadcast 'gherkin.snippet', "<strong>#{name}</strong>"
-      background: (keyword, name, description, line) =>
-        # console.log({token:'background',keyword:keyword,name:name,description:description,line:line})
-      scenario: (keyword, name, description, line) =>
-        # console.log({token:'scenario',keyword:keyword,name:name,description:description,line:line})
-      scenario_outline: (keyword, name, description, line) =>
-        # console.log({token:'scenario_outline',keyword:keyword,name:name,description:description,line:line})
-      examples: (keyword, name, description, line) =>
-        # console.log({token:'examples',keyword:keyword,name:name,description:description,line:line})
+        @_concat 'tag', 'tag', value, '', line
       step: (keyword, name, line) =>
-        # console.log({token:'step',keyword:keyword,name:name,line:line})
+        @_concat 'step', keyword, name, '', line
       doc_string: (content_type, string, line) =>
-        # console.log({token:'doc_string',content_type:content_type,string:string,line:line})
+        @_concat 'doc_string', 'doc_string', string, content_type, line
       row: (row, line) =>
-        # console.log({token:'row',row:row,line:line})
-      eof: () =>
-        # console.log({token:'eof'})
+        # combine single rows to one table element
+        last = @content[@content.length - 1]
+        if last.type is 'table'
+          last.value.push row
+        else
+          table = [row]
+          @_concat 'table', 'table', table, '', line
+      eof: =>
+        @$rootScope.$broadcast 'gherkin.done', @content
     }
+
+  _concat: (type, keyword, value, description, line) ->
+    part = 
+      type: type
+      keyword: keyword
+      description: description
+      line: line
+      value: value
+      indentation: @fileContent[line - 1].search(/\S/) # get original file indentation
+
+    @content.push part
 
 module.exports = Gherkin

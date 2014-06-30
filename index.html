@@ -15,9 +15,10 @@
 <body>
   <section ng-controller="FileCtrl">
     <input  file-change="selected" type="file" accept=".feature" />
+    <div ng-show="error">{{error}}</div>
   </section>
   <section ng-controller="EditorCtrl">
-    <div ng-repeat="line in content.lines" ng-bind-html="line">{{line}}</div>
+    <article ng-repeat="line in content.lines" gherkin="line"></article>
   </section>
 </body>
 </html>

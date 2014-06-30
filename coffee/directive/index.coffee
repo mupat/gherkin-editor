@@ -1,6 +1,7 @@
 path = "./build/js/directive/"
 Change = require "#{path}change"
+Gherkin = require "#{path}gherkin"
 
-gherkinEditorDirectives = angular.module 'gherkinEditor.directives', []
-
-gherkinEditorDirectives.directive 'fileChange', -> new Change()
+directives = angular.module 'gherkinEditor.directives', []
+directives.directive 'fileChange', -> new Change()
+directives.directive 'gherkin', -> new Gherkin()

@@ -14,10 +14,12 @@
 </head>
 <body>
   <section ng-controller="FileCtrl">
-    <input  file-change="selected" type="file" accept=".feature" />
+    <input file-change="openSelected" type="file" accept=".feature" ng-click="openFile=''"/>
+    <button ng-click="saveSelected()">Save</button>
+    <input file-change="saveAsSelected" type="file" accept=".feature" nwsaveas ng-click="saveFile=''"/>
     <div ng-show="error">{{error}}</div>
   </section>
-  <section ng-controller="EditorCtrl">
+  <section ng-controller="EditorCtrl" id="editor" contenteditable>
     <article ng-repeat="line in content.lines" gherkin="line"></article>
   </section>
 </body>

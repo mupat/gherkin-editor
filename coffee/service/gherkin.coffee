@@ -3,9 +3,23 @@ fs = require 'fs'
 
 class Gherkin
   constructor: (@$rootScope) ->
+    @emit = false
     Lexer = gherkin.Lexer('en')
     @lexer = new Lexer @_gherkinFuncs()
-    @$rootScope.$on 'file.selected', @_load.bind(@)
+    @$rootScope.$on 'file.open.selected', @_load.bind(@)
+    @$rootScope.$on 'file.save.selected', @_save.bind(@)
+
+  _save: (scope, file, content) ->
+    try
+      @emit = false
+      @lexer.scan content
+    catch e
+      @$rootScope.$emit 'error', e
+      return @$rootScope.$broadcast 'gherkin.error', e.message
+    
+    fs.writeFile file, content, (err) =>
+      return @$rootScope.$emit 'error', err if err
+      @$rootScope.$emit 'file.saved'
 
   _load: (scope, file) ->
     @content = []
@@ -14,6 +28,7 @@ class Gherkin
       return @$rootScope.$emit 'error', err if err 
       try
         @fileContent = data.toString().split('\n')
+        @emit = true
         @lexer.scan data
       catch e
         @$rootScope.$emit 'error', e
@@ -53,11 +68,13 @@ class Gherkin
           table = [row]
           @_concat 'table', 'table', table, width, line
       eof: =>
-        @_prepare()
-        @$rootScope.$broadcast 'gherkin.done', @content
+        if @emit
+          @_prepare()
+          @$rootScope.$broadcast 'gherkin.done', @content
     }
 
   _concat: (type, keyword, value, description, line) ->
+    return unless @emit
     part = 
       type: type
       keyword: keyword

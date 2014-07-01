@@ -14,17 +14,13 @@ class CustomHTML
 
   run: (scope, element, attrs) ->
     line = scope.gherkin
-    console.log 'line', line
     html = ""
-
-    # if line.type in @KEYWORDS and line.type isnt 'step'
-    #   html += '\n'
 
     # check if keyword need to be printed
     if line.type in @KEYWORDS
       html += "#{@_addWhitespace(line.level)}<strong class='keyword'>#{line.keyword}" if line.type in @KEYWORDS
       html += ":" if line.type isnt 'step'
-      html += " </strong>"
+      html += "</strong>"
 
     #values
     if line.type is 'table'

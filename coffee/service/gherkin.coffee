@@ -38,11 +38,20 @@ class Gherkin
       row: (row, line) =>
         # combine single rows to one table element
         last = @content[@content.length - 1]
+
+        width = []
+        # calculate width
+        for cell,j in row
+          if last.type is 'table'
+            width[j] = cell.length if width[j] < cell.length
+          else
+            width.push cell.length
+
         if last.type is 'table'
           last.value.push row
         else
           table = [row]
-          @_concat 'table', 'table', table, '', line
+          @_concat 'table', 'table', table, width, line
       eof: =>
         @_prepare()
         @$rootScope.$broadcast 'gherkin.done', @content

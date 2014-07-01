@@ -2,7 +2,7 @@ class CustomHTML
   KEYWORDS: ['feature', 'scenario', 'step', 'background', 'scenario_outline', 'examples']
   INDENTATION_SPACES: 2
 
-  constructor: (@$compile) ->
+  constructor: ->
     obj = 
       restrict: 'A'
       replace: true
@@ -44,6 +44,8 @@ class CustomHTML
           else
             html += '</span>'
 
+          html += Array(line.description[j] - cell.length + 1).join(' ')
+
           html += "<span> | </span>"
         html += '\n' unless i is line.value.length - 1
     else if line.type is 'doc_string'
@@ -56,7 +58,7 @@ class CustomHTML
       html += "<span class='value'>#{@_addValue(line.value)}</span>" #print value
 
     # if we have a description, print it
-    if line.description? and line.description.length > 0 and line.type isnt 'doc_string'
+    if line.description? and line.description.length > 0 and line.type isnt 'doc_string' and line.type isnt 'table'
       for desc_line in line.description.split('\n')
         html += "\n#{@_addWhitespace(line.level + 1)}<span class='description'>#{desc_line}</span>"
 
@@ -68,10 +70,6 @@ class CustomHTML
     return Array((level * @INDENTATION_SPACES) + 1).join ' '
 
   _addValue: (value) ->
-    console.log 'value bofere', value, value.replace('<', '\<')
-    val = value.replace('<', '\<')
-    val = val.replace('>', '\>')
-    console.log 'balue', val
-    return val
+    return value.replace('<', '<span>&lt;').replace('>', '&gt;</span>')
 
 module.exports = CustomHTML

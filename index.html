@@ -19,8 +19,6 @@
     <input file-change="saveAsSelected" type="file" accept=".feature" nwsaveas ng-click="saveFile=''"/>
     <div ng-show="error">{{error}}</div>
   </section>
-  <section ng-controller="EditorCtrl" id="editor" contenteditable>
-    <article ng-repeat="line in content.lines" gherkin="line"></article>
-  </section>
+  <pre ng-controller="EditorCtrl" id="editor" contenteditable gherkin="content.lines"></pre>
 </body>
 </html>

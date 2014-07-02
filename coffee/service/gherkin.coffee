@@ -118,28 +118,10 @@ class Gherkin
     if actual.type is 'doc_string'
       return before.level + 1
 
-    # if actual.type is 'comment'
-      # if before.blockEnd
-      #   return before.level - 1
-      # actualFileIndent = @fileContent[actual.line - 1].search(/\S/) # get original file level
-      # lastFileIndent = @fileContent[actual.line - 2].search(/\S/) # get original file level
-      # if lastFileIndent > actualFileIndent
-      #   return last.level - 1
-
-    # level = before.level # set last level
-
     # if in contains to a block
     if before.type in ['feature', 'background', 'scenario', 'scenario_outline']
       return before.level + 1
-    # else if actual.type in ['feature', 'background', 'scenario', 'scenario_outline'] 
-    #   indentation--
-    
-    # use the file indentation to see the end of a block
-    # console.log 'check file', actualFileIndent, lastFileIndent
-    # if actualFileIndent < lastFileIndent
-    #     indentation--
 
-    # console.log 'return indent', indentation
     return before.level
 
 module.exports = Gherkin

@@ -4,11 +4,13 @@ class Editor
   constructor: ($rootScope, $scope) ->
     $scope.content = {}
     $scope.content.lines = []
-    $rootScope.$on 'gherkin.snippet', (scope, entry) ->
-      $scope.$apply ->
-        $scope.content.lines.push entry
+    $rootScope.$on 'file.open.selected', (scope, file) ->
+      # window.document.getElementById('editor').innerHTML = ''
+      # $scope.$apply ->
+      #   $scope.content.lines = []
 
     $rootScope.$on 'gherkin.done', (scope, content) ->
+      window.document.getElementById('editor').innerHTML = ''
       $scope.$apply ->
         $scope.content.lines = content
 
